@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'dart:developer' as dev;
+import 'package:supabase_lab/pages/home.dart';
+//import 'dart:developer' as dev;
 
 void main() async {
   await dotenv.load(fileName: ".env");
@@ -11,17 +12,8 @@ void main() async {
     postgrestOptions: const PostgrestClientOptions(schema: 'codelab'),
   );
 
-  fetchData().then((value) => dev.log(value));
-  //runApp(const MyApp());
-}
-
-Future<String> fetchData() async {
-  final supabase = Supabase.instance.client;
-
-// Make a request
-  var data = await supabase.from('demo').select().eq('id', 1);
-  return('Data: $data');
-
+  //fetchData().then((value) => dev.log(value));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -30,15 +22,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Supabase Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.indigo,
-      ),
-      home: const Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+      debugShowCheckedModeBanner: false,
+
+      //home: Home()
+      routes: {
+        '/': (context) => const Home(),
+      },
     );
   }
 }
