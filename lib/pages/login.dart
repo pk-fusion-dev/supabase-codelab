@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../network/supabase_auth.dart';
+
 class Login extends StatefulWidget {
   const Login({super.key});
 
@@ -9,9 +11,11 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  final AuthService _authService = AuthService();
   final _formKey = GlobalKey<FormState>();
   final _userNameController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool visible = false;
 
   @override
   void dispose() {
@@ -35,17 +39,64 @@ class _LoginState extends State<Login> {
     return null;
   }
 
-  void _submitForm() {
+  Future<void> _login() async {
     if (_formKey.currentState?.validate() ?? false) {
-      Fluttertoast.showToast(
-          msg: " Loghin Success!",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.blue,
-          textColor: Colors.white,
-          fontSize: 16.0);
+      try {
+        await _authService
+            .signInWithUsername(
+                _userNameController.text, _passwordController.text)
+            .then((value) {
+          setState(() {
+            visible = true;
+          });
+
+          _showSuccessToast();
+          clearInput();
+        });
+      } catch (e) {
+        _showErrorToast(e.toString());
+      }
     }
+  }
+
+  Future<void> _logout() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      await _authService
+          .signInWithUsername(
+              _userNameController.text, _passwordController.text)
+          .whenComplete(() {
+        setState(() {
+          visible = false;
+        });
+      });
+    }
+  }
+
+  void _showSuccessToast() {
+    Fluttertoast.showToast(
+        msg: " Login Success!",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.blue,
+        textColor: Colors.white,
+        fontSize: 16.0);
+  }
+
+  void _showErrorToast(String e) {
+    Fluttertoast.showToast(
+        msg: " $e !",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0);
+  }
+
+  void clearInput() {
+    _userNameController.clear();
+    _passwordController.clear();
   }
 
   @override
@@ -97,11 +148,27 @@ class _LoginState extends State<Login> {
                       minimumSize: const Size(
                           double.infinity, 50), // Set minimum width and height
                     ),
-                    onPressed: _submitForm,
+                    onPressed: _login,
                     child: const Text(
                       'LOGIN',
                       style: TextStyle(color: Colors.white),
                     ),
+                  ),
+                  InkWell(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Visibility(
+                        visible: visible,
+                        child: const Text(
+                          'Logout',
+                          style: TextStyle(
+                            color: Colors.blue,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
+                    ),
+                    onTap: () => {_logout()},
                   ),
                 ],
               ),
