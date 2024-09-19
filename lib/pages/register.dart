@@ -1,8 +1,8 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
-import '../network/supabase_auth.dart';
+import 'package:supabase_lab/network/supabase_service.dart';
+import 'dart:developer' as dev;
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -12,7 +12,7 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  final AuthService _authService = AuthService();
+  final SupabaseService _authService = SupabaseService();
   final _formKey = GlobalKey<FormState>();
   final _userNameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -20,7 +20,6 @@ class _RegisterState extends State<Register> {
 
   String dropdownvalue = 'Service';
 
-  
   @override
   void dispose() {
     _userNameController.dispose();
@@ -83,13 +82,14 @@ class _RegisterState extends State<Register> {
     if (_formKey.currentState?.validate() ?? false) {
       try {
         await _authService
-            .signUp(_emailController.text, _passwordController.text,
+            .register(_emailController.text, _passwordController.text,
                 _userNameController.text, dropdownvalue)
             .whenComplete(() {
           clearInput();
           _showSuccessToast();
         });
       } catch (e) {
+        dev.log(e.toString());
         _showErrorToast(e.toString());
       }
     }

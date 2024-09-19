@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
-import '../network/supabase_auth.dart';
+import 'package:supabase_lab/model/user_model.dart';
+import '../network/supabase_service.dart';
+import 'dart:developer' as dev;
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -11,11 +12,11 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  final AuthService _authService = AuthService();
+  final SupabaseService _authService = SupabaseService();
   final _formKey = GlobalKey<FormState>();
   final _userNameController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool visible = false;
+  late FusionUser fusionUser;
 
   @override
   void dispose() {
@@ -43,32 +44,15 @@ class _LoginState extends State<Login> {
     if (_formKey.currentState?.validate() ?? false) {
       try {
         await _authService
-            .signInWithUsername(
-                _userNameController.text, _passwordController.text)
+            .login(_userNameController.text, _passwordController.text)
             .then((value) {
-          setState(() {
-            visible = true;
-          });
-
+          fusionUser = value;
           _showSuccessToast();
           clearInput();
         });
       } catch (e) {
-        _showErrorToast(e.toString());
+        dev.log(e.toString());
       }
-    }
-  }
-
-  Future<void> _logout() async {
-    if (_formKey.currentState?.validate() ?? false) {
-      await _authService
-          .signInWithUsername(
-              _userNameController.text, _passwordController.text)
-          .whenComplete(() {
-        setState(() {
-          visible = false;
-        });
-      });
     }
   }
 
@@ -153,22 +137,6 @@ class _LoginState extends State<Login> {
                       'LOGIN',
                       style: TextStyle(color: Colors.white),
                     ),
-                  ),
-                  InkWell(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Visibility(
-                        visible: visible,
-                        child: const Text(
-                          'Logout',
-                          style: TextStyle(
-                            color: Colors.blue,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                      ),
-                    ),
-                    onTap: () => {_logout()},
                   ),
                 ],
               ),
