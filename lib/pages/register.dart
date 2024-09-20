@@ -2,7 +2,6 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:supabase_lab/network/supabase_service.dart';
-import 'dart:developer' as dev;
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -69,7 +68,7 @@ class _RegisterState extends State<Register> {
 
   void _showErrorToast(String e) {
     Fluttertoast.showToast(
-        msg: " Registeration Fail With $e !",
+        msg: " $e !",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -80,18 +79,17 @@ class _RegisterState extends State<Register> {
 
   void _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
-      try {
-        await _authService
-            .register(_emailController.text, _passwordController.text,
-                _userNameController.text, dropdownvalue)
-            .whenComplete(() {
-          clearInput();
+      await _authService
+          .register(_emailController.text, _passwordController.text,
+              _userNameController.text, dropdownvalue)
+          .then((value) {
+        if (value == 'SUCCESS') {
           _showSuccessToast();
-        });
-      } catch (e) {
-        dev.log(e.toString());
-        _showErrorToast(e.toString());
-      }
+        } else {
+          _showErrorToast(value);
+        }
+        clearInput();
+      });
     }
   }
 
@@ -107,7 +105,7 @@ class _RegisterState extends State<Register> {
       key: _formKey,
       child: SizedBox(
         child: Card(
-          margin: const EdgeInsets.all(20.0),
+          margin: const EdgeInsets.all(5.0),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(

@@ -10,28 +10,32 @@ class SupabaseService {
     return ('Data: $data');
   }
 
-  Future<void> register(
+  Future<String> register(
       String email, String password, String username, String role) async {
-    await supabaseClient.from('users').insert({
-      'email': email,
-      'password': password, // Consider hashing passwords
-      'username': username,
-      'role': role
-    });
+    try {
+      await supabaseClient.from('users').insert({
+        'email': email,
+        'password': password, // Consider hashing passwords
+        'username': username,
+        'role': role
+      });
+      return 'SUCCESS';
+    } catch (e) {
+      return 'User already exist';
+    }
   }
 
   Future<FusionUser> login(String username, String password) async {
-    final res = await supabaseClient
-        .from('users')
-        .select() // Assuming you store email for Supabase authentication
-        .eq('username', username)
-        .eq('password', password)
-        .single();
-
-    if (res.isNotEmpty) {
+    try {
+      final res = await supabaseClient
+          .from('users')
+          .select() // Assuming you store email for Supabase authentication
+          .eq('username', username)
+          .eq('password', password)
+          .single();
       FusionUser fusionUser = FusionUser.fromJson(res);
       return fusionUser;
-    } else {
+    } catch (e) {
       return FusionUser();
     }
   }
