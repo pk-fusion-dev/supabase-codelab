@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:supabase_lab/pages/home.dart';
+import 'package:supabase_lab/template/home_template.dart';
+import 'package:supabase_lab/template/login_template.dart';
 //import 'dart:developer' as dev;
 
 void main() async {
@@ -24,9 +25,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
 
+      initialRoute: 'login_screen',
       //home: Home()
       routes: {
-        '/': (context) => const Home(),
+        'login_screen': (context) => const LoginTemplate(),
+        'home_screen': (context) => const HomeTemplate()
       },
     );
   }

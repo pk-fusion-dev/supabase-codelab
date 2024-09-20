@@ -46,7 +46,7 @@ class _LoginState extends State<Login> {
           .then((value) {
         fusionUser = value;
         if (fusionUser.username != null) {
-          _showSuccessToast();
+          Navigator.pushReplacementNamed(context, 'home_screen');
         } else {
           _showErrorToast('Invalid User');
         }
@@ -55,6 +55,7 @@ class _LoginState extends State<Login> {
     }
   }
 
+  // ignore: unused_element
   void _showSuccessToast() {
     Fluttertoast.showToast(
         msg: " Login Success!",
