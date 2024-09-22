@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_lab/pages/activity_logs.dart';
-import 'package:supabase_lab/pages/profile.dart';
-import 'package:supabase_lab/pages/video_content.dart';
+import 'package:supabase_lab/pages/activity_logs_page.dart';
+import 'package:supabase_lab/pages/profile_page.dart';
+import 'package:supabase_lab/pages/video_content_page.dart';
 
 class HomeTemplate extends StatefulWidget {
   const HomeTemplate({super.key});

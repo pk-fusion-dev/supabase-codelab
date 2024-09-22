@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_lab/pages/login.dart';
-import 'package:supabase_lab/pages/register.dart';
+import 'package:supabase_lab/pages/login_page.dart';
+import 'package:supabase_lab/pages/register_page.dart';
 
 class LoginTemplate extends StatelessWidget {
   const LoginTemplate({super.key});

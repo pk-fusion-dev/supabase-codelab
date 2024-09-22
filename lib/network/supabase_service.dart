@@ -1,4 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase_lab/model/activity_logs.dart';
 import 'dart:async';
 import 'package:supabase_lab/model/user_model.dart';
 import 'dart:developer' as dev;
@@ -6,7 +7,7 @@ import 'dart:developer' as dev;
 class SupabaseService {
   final SupabaseClient supabaseClient = Supabase.instance.client;
 
-  Future<String> fetchData() async {
+  Future<String> fetchSampleData() async {
     var data = await supabaseClient.from('demo').select().eq('id', 1);
     return ('Data: $data');
   }
@@ -98,6 +99,36 @@ class SupabaseService {
       return users;
     } catch (e) {
       return users;
+    }
+  }
+
+  Future<List<ActivityLog>> getActivityLogs(String startDate, String endDate) async {
+    List<ActivityLog> activityLogs = List.empty();
+    try {
+      final res = await supabaseClient
+          .from('activity_logs')
+          .select()
+          .gte('created_at', (startDate))//format 2024-08-01 00:00:00
+          .lte('created_at', (endDate));//format 22024-09-30 23:59:59
+       activityLogs = res.map((e) => ActivityLog.fromJson(e)).toList();
+       return activityLogs;
+    } catch (e) {
+      return activityLogs;
+    }
+  }
+
+
+  Future<String> saveActivityLog(String businessName,String action,String username,int totalAmount) async {
+    try {
+      await supabaseClient.from('activity_logs').insert({
+        'business_name' : businessName,
+        'action' : action,
+        'username' : username,
+        'total_amount' : totalAmount
+      });
+      return 'SUCCESS';
+    } catch (e) {
+      return 'ERROR';
     }
   }
 }
