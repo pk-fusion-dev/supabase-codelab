@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_lab/model/user_model.dart';
 import '../network/supabase_service.dart';
 
@@ -16,7 +17,6 @@ class _LoginState extends State<Login> {
   final _userNameController = TextEditingController();
   final _passwordController = TextEditingController();
   late FusionUser fusionUser;
-
   @override
   void dispose() {
     _userNameController.dispose();
@@ -40,12 +40,16 @@ class _LoginState extends State<Login> {
   }
 
   Future<void> _login() async {
+    
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
     if (_formKey.currentState?.validate() ?? false) {
       await _authService
           .login(_userNameController.text, _passwordController.text)
           .then((value) {
         fusionUser = value;
         if (fusionUser.username != null) {
+          prefs.setString('username', fusionUser.username!);
           Navigator.pushReplacementNamed(context, 'home_screen');
         } else {
           _showErrorToast('Invalid User');
