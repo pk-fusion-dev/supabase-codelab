@@ -27,7 +27,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        
           colorSchemeSeed: const Color.fromARGB(255, 53, 55, 66), 
           useMaterial3: true),
       initialRoute: 'login_screen',

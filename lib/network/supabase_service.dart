@@ -102,33 +102,37 @@ class SupabaseService {
     }
   }
 
-  Future<List<ActivityLog>> getActivityLogs(String startDate, String endDate) async {
+  Future<List<ActivityLog>> getActivityLogs(
+      String startDate, String endDate) async {
     List<ActivityLog> activityLogs = List.empty();
     try {
       final res = await supabaseClient
           .from('activity_logs')
           .select()
-          .gte('created_at', (startDate))//format 2024-08-01 00:00:00
-          .lte('created_at', (endDate));//format 22024-09-30 23:59:59
-       activityLogs = res.map((e) => ActivityLog.fromJson(e)).toList();
-       return activityLogs;
+          .gte('created_at', (startDate)) //format 2024-08-01 00:00:00
+          .lte('created_at', (endDate))
+          .order('created_at', ascending: false); //format 22024-09-30 23:59:59
+      activityLogs = res.map((e) => ActivityLog.fromJson(e)).toList();
+      return activityLogs;
     } catch (e) {
       return activityLogs;
     }
   }
 
-
-  Future<String> saveActivityLog(String businessName,String action,String username,int totalAmount) async {
+  Future<String> saveActivityLog(String businessName, String action,
+      String username, int totalAmount) async {
     try {
       await supabaseClient.from('activity_logs').insert({
-        'business_name' : businessName,
-        'action' : action,
-        'username' : username,
-        'total_amount' : totalAmount
+        'business_name': businessName,
+        'action': action,
+        'username': username,
+        'total_amount': totalAmount
       });
       return 'SUCCESS';
     } catch (e) {
       return 'ERROR';
     }
+    // Action Type
+    // ACTIVATE_LICENSE,SWITCH_LICENSE,ACTIVATE_PC_CLIENT,ACTIVATE_MOBILE_CLIENT,ACTIVATE_STARMAN,EXTEND_TRIAL,EXTEND_LICENSE
   }
 }

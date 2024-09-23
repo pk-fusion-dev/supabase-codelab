@@ -139,35 +139,47 @@ class _NewActivityLogState extends State<NewActivityLog> {
                   const SizedBox(height: 10),
                   Container(
                     padding: const EdgeInsets.all(0),
-                    child: DropdownMenu(
-                        initialSelection: "ACTIVATE_LICENSE",
-                        width: 335,
-                        //focusNode: _focusNode,
-                        dropdownMenuEntries: const [
-                          DropdownMenuEntry(
-                              value: "ACTIVATE_LICENSE",
-                              label: "ACTIVATE_LICENSE"),
-                          DropdownMenuEntry(
-                              value: "SWITCH_LICENSE", label: "SWITCH_LICENSE"),
-                          DropdownMenuEntry(
-                              value: "ACTIVATE_PC_CLIENT",
-                              label: "ACTIVATE_PC_CLIENT"),
-                          DropdownMenuEntry(
-                              value: "ACTIVATE_MOBILE_CLIENT",
-                              label: "ACTIVATE_MOBILE_CLIENT"),
-                          DropdownMenuEntry(
-                              value: "ACTIVATE_STARMAN",
-                              label: "ACTIVATE_STARMAN"),
-                          DropdownMenuEntry(
-                              value: "EXTEND_TRIAL", label: "EXTEND_TRIAL"),
-                          DropdownMenuEntry(
-                              value: "LICENSE_EXTEND", label: "LICENSE_EXTEND"),
-                        ],
-                        onSelected: (String? newValue) {
-                          setState(() {
-                            dropdownvalue = newValue!;
-                          });
-                        }),
+                    child: InputDecorator(
+                      decoration: InputDecoration(
+                        enabled: false,
+                        labelText: 'Service',
+                        labelStyle: const TextStyle(color: Colors.black),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                      child: DropdownMenu(
+                          initialSelection: "ACTIVATE_LICENSE",
+                          width: 335,
+                          //focusNode: _focusNode,
+                          dropdownMenuEntries: const [
+                            DropdownMenuEntry(
+                                value: "ACTIVATE_LICENSE",
+                                label: "ACTIVATE_LICENSE"),
+                            DropdownMenuEntry(
+                                value: "SWITCH_LICENSE",
+                                label: "SWITCH_LICENSE"),
+                            DropdownMenuEntry(
+                                value: "ACTIVATE_PC_CLIENT",
+                                label: "ACTIVATE_PC_CLIENT"),
+                            DropdownMenuEntry(
+                                value: "ACTIVATE_MOBILE_CLIENT",
+                                label: "ACTIVATE_MOBILE_CLIENT"),
+                            DropdownMenuEntry(
+                                value: "ACTIVATE_STARMAN",
+                                label: "ACTIVATE_STARMAN"),
+                            DropdownMenuEntry(
+                                value: "EXTEND_TRIAL", label: "EXTEND_TRIAL"),
+                            DropdownMenuEntry(
+                                value: "EXTEND_LICENSE",
+                                label: "EXTEND_LICENSE"),
+                          ],
+                          onSelected: (String? newValue) {
+                            setState(() {
+                              dropdownvalue = newValue!;
+                            });
+                          }),
+                    ),
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton(

@@ -154,20 +154,30 @@ class _RegisterState extends State<Register> {
                 const SizedBox(height: 10),
                 Container(
                   padding: const EdgeInsets.all(4),
-                  child: DropdownMenu(
-                      initialSelection: "Service",
-                      width: 335,
-                      dropdownMenuEntries: const [
-                        DropdownMenuEntry(value: "Service", label: "Service"),
-                        DropdownMenuEntry(
-                            value: "Marketing", label: "Marketing"),
-                      ],
-                      onSelected: (String? newValue) {
-                        setState(() {
-                          dropdownvalue = newValue!;
-                          _roleSelect(newValue);
-                        });
-                      }),
+                  child: InputDecorator(
+                    decoration: InputDecoration(
+                      labelText: 'Role',
+                      labelStyle: const TextStyle(color: Colors.black),
+                      enabled: false,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                    child: DropdownMenu(
+                        initialSelection: "Service",
+                        width: 335,
+                        dropdownMenuEntries: const [
+                          DropdownMenuEntry(value: "Service", label: "Service"),
+                          DropdownMenuEntry(
+                              value: "Marketing", label: "Marketing"),
+                        ],
+                        onSelected: (String? newValue) {
+                          setState(() {
+                            dropdownvalue = newValue!;
+                            _roleSelect(newValue);
+                          });
+                        }),
+                  ),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(

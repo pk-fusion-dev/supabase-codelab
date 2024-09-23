@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_lab/pages/activity_logs_page.dart';
+import 'package:supabase_lab/pages/chat_page.dart';
 import 'package:supabase_lab/pages/new_activity_log.dart';
 import 'package:supabase_lab/pages/video_content_page.dart';
 
@@ -39,11 +40,17 @@ class _HomeTemplateState extends State<HomeTemplate> {
           break;
         case 2:
           {
+            _title = 'Chat';
             _naviBarIndex = 2;
-            _logout();
           }
           break;
         case 3:
+          {
+            _naviBarIndex = 3;
+            _logout();
+          }
+          break;
+        case 4:
           {
             _title = 'New Activity Log';
           }
@@ -82,15 +89,36 @@ class _HomeTemplateState extends State<HomeTemplate> {
     );
   }
 
-  Widget getLogFAB() {
-    return FloatingActionButton(
-      backgroundColor: Colors.deepPurple,
-      mini: false,
-      onPressed: () {
-        _onItemTapped(3);
-      },
-      child: const Icon(Icons.add, color: Colors.white),
-    );
+  FloatingActionButton? _getFAB() {
+    if (_selectedIndex == 0) {
+      return FloatingActionButton(
+        backgroundColor: Colors.deepPurple,
+        mini: false,
+        onPressed: () {
+          _onItemTapped(4);
+        },
+        child: const Icon(Icons.add, color: Colors.white),
+      );
+    } else {
+      return null;
+    }
+  }
+
+  Widget getDateFilter() {
+    if (_selectedIndex == 0) {
+      return PopupMenuButton<String>(
+        icon: const Icon(Icons.menu_outlined),
+        onSelected: null,
+        itemBuilder: (context) => [
+          const PopupMenuItem(value: 'Today', child: Text('Today')),
+          const PopupMenuItem(value: 'Yesterday', child: Text('Yesterday')),
+          const PopupMenuItem(value: 'This Month', child: Text('This Month')),
+          const PopupMenuItem(value: 'Last Month', child: Text('Last Month')),
+        ],
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
   }
 
   Future<void> removeSession() async {
@@ -103,22 +131,33 @@ class _HomeTemplateState extends State<HomeTemplate> {
     final List<Widget> pages = [
       const ActivityLogs(),
       const VideoContent(),
+      const SupaChat(),
       const Text(''), //dummy
       const NewActivityLog()
     ];
 
-    var fabs = [getLogFAB(), null, null, null];
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(_title),
+        title: Text(
+          _title,
+          style: const TextStyle(
+              fontWeight: FontWeight.bold, color: Colors.deepPurple),
+        ),
+        actions: [
+          getDateFilter(),
+        ],
       ),
+
       body: pages[_selectedIndex],
-      floatingActionButton: fabs[_selectedIndex],
+      floatingActionButton: _getFAB(),
       //bottomNavigationBar : _naviBarIndex[index];
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _naviBarIndex, //New
         onTap: _onItemTapped, //New
+        //fixedColor: Colors.deepPurple,
+        //unselectedItemColor: Colors.blue,
+        type: BottomNavigationBarType.fixed,
+        showUnselectedLabels: true,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.api_sharp),
@@ -127,6 +166,10 @@ class _HomeTemplateState extends State<HomeTemplate> {
           BottomNavigationBarItem(
             icon: Icon(Icons.ondemand_video_sharp),
             label: 'Video',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat),
+            label: 'Chat',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.logout),
