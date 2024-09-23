@@ -104,23 +104,6 @@ class _HomeTemplateState extends State<HomeTemplate> {
     }
   }
 
-  Widget getDateFilter() {
-    if (_selectedIndex == 0) {
-      return PopupMenuButton<String>(
-        icon: const Icon(Icons.menu_outlined),
-        onSelected: null,
-        itemBuilder: (context) => [
-          const PopupMenuItem(value: 'Today', child: Text('Today')),
-          const PopupMenuItem(value: 'Yesterday', child: Text('Yesterday')),
-          const PopupMenuItem(value: 'This Month', child: Text('This Month')),
-          const PopupMenuItem(value: 'Last Month', child: Text('Last Month')),
-        ],
-      );
-    } else {
-      return const SizedBox.shrink();
-    }
-  }
-
   Future<void> removeSession() async {
     final prefs = await SharedPreferences.getInstance();
     prefs.remove('username');
@@ -143,9 +126,6 @@ class _HomeTemplateState extends State<HomeTemplate> {
           style: const TextStyle(
               fontWeight: FontWeight.bold, color: Colors.deepPurple),
         ),
-        actions: [
-          getDateFilter(),
-        ],
       ),
 
       body: pages[_selectedIndex],

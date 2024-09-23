@@ -6,6 +6,7 @@ import 'package:supabase_lab/demo/supabase_tester.dart';
 import 'package:supabase_lab/template/home_template.dart';
 import 'package:supabase_lab/template/login_template.dart';
 
+
 void main() async {
   await dotenv.load(fileName: ".env");
   await Supabase.initialize(
@@ -15,7 +16,6 @@ void main() async {
   );
 
   //SupabaseTester().saveActivityLog();
-
   runApp(const MyApp());
 }
 
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          colorSchemeSeed: const Color.fromARGB(255, 53, 55, 66), 
+          colorSchemeSeed: const Color.fromARGB(255, 53, 55, 66),
           useMaterial3: true),
       initialRoute: 'login_screen',
       //home: Home()
