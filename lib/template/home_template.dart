@@ -26,6 +26,8 @@ class _HomeTemplateState extends State<HomeTemplate> {
     super.initState();
   }
 
+  
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -113,7 +115,6 @@ class _HomeTemplateState extends State<HomeTemplate> {
     prefs.remove('username');
   }
 
-  
   @override
   Widget build(BuildContext context) {
     final List<Widget> pages = [

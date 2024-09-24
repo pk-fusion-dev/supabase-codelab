@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:supabase_lab/model/activity_logs.dart';
 import 'dart:async';
@@ -136,5 +138,29 @@ class SupabaseService {
     }
     // Action Type
     // ACTIVATE_LICENSE,SWITCH_LICENSE,ACTIVATE_PC_CLIENT,ACTIVATE_MOBILE_CLIENT,ACTIVATE_STARMAN,EXTEND_TRIAL,EXTEND_LICENSE
+  }
+
+  void streamToRealtime() {
+    supabaseClient.from('activity_logs').stream(primaryKey: ['id']);
+  }
+
+  void subscribeActivityLogs() {
+    supabaseClient
+        .channel('codelab:activity_logs')
+        .onPostgresChanges(
+            event: PostgresChangeEvent.all,
+            schema: 'codelab',
+            table: 'activity_logs',
+            callback: (payload) {
+              Fluttertoast.showToast(
+                  msg: " New Activity Log!",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: Colors.blue,
+                  textColor: Colors.white,
+                  fontSize: 16.0);
+            })
+        .subscribe();
   }
 }
