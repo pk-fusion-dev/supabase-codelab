@@ -17,6 +17,9 @@ class _ActivityLogsState extends State<ActivityLogs> {
   String today = DateUtil().today();
   String yesterday = DateUtil().yesterday();
   String selectedDate = 'Today';
+  DateTime now = DateTime.now();
+  String startDate = '';
+  String endDate = '';
 
   loadActivityLogs(String startDate, String endDate) async {
     await authService.getActivityLogs(startDate, endDate).then((value) {
@@ -29,14 +32,12 @@ class _ActivityLogsState extends State<ActivityLogs> {
   @override
   void initState() {
     super.initState();
-
-    loadActivityLogs('2024/1/3 00:00:00', '2024/10/30 23:59:59');
+    startDate = DateUtil().getFirstDayOfMonth(now.year, now.month);
+    endDate = DateUtil().getLastDayOfMonth(now.year, now.month);
+    loadActivityLogs(startDate, endDate);
   }
 
   void _onDateSelect(String value) {
-    DateTime now = DateTime.now();
-    String startDate = '';
-    String endDate = '';
     setState(() {
       selectedDate = value;
     });
@@ -109,6 +110,8 @@ class _ActivityLogsState extends State<ActivityLogs> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      // mainAxisAlignment: MainAxisAlignment.center,
+      //crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Row(mainAxisAlignment: MainAxisAlignment.end, children: [
           Text(
@@ -145,13 +148,20 @@ class _ActivityLogsState extends State<ActivityLogs> {
         const SizedBox(
           height: 5,
         ),
-        Expanded(
-          child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: activityList.length,
-              itemBuilder: (context, index) =>
-                  loadActivityCard(activityList[index])),
-        ),
+        activityList.isNotEmpty
+            ? Expanded(
+                child: ListView.builder(
+                    //scrollDirection: Axis.vertical,
+                    itemCount: activityList.length,
+                    itemBuilder: (context, index) =>
+                        loadActivityCard(activityList[index])),
+              )
+            : const Center(
+                child: Text(
+                'NO RECORD.',
+                style: TextStyle(
+                    color: Colors.deepPurple, fontWeight: FontWeight.bold),
+              ))
       ],
     );
   }

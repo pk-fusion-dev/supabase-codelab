@@ -3,7 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:supabase_lab/pages/activity_logs_page.dart';
 import 'package:supabase_lab/pages/chat_page.dart';
-import 'package:supabase_lab/pages/new_activity_log.dart';
+import 'package:supabase_lab/pages/add_activity_log.dart';
+import 'package:supabase_lab/pages/upload_video.dart';
 import 'package:supabase_lab/pages/video_content_page.dart';
 // ignore: unused_import
 import 'dart:developer' as dev;
@@ -16,49 +17,81 @@ class HomeTemplate extends StatefulWidget {
 }
 
 class _HomeTemplateState extends State<HomeTemplate> {
-  int _selectedIndex = 0;
+  int _fabIndex = 0;
   int _naviBarIndex = 0;
+  int _pageIndex = 0;
   var _title = 'Activity Logs';
   final SupabaseClient supabase = Supabase.instance.client;
+
+  final List<Widget> pages = [
+    const ActivityLogs(),
+    const VideoContent(),
+    const SupaChat(),
+    const NewActivityLog(),
+    const UploadVideo()
+  ];
 
   @override
   initState() {
     super.initState();
   }
 
-  
-
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
-      switch (_selectedIndex) {
+      switch (index) {
         case 0:
           {
             _title = 'Activity Logs';
+            _pageIndex = 0;
             _naviBarIndex = 0;
+            _fabIndex = 0;
           }
           break;
         case 1:
           {
-            _title = 'Videos';
+            _title = 'Uploaded Videos';
+            _pageIndex = 1;
             _naviBarIndex = 1;
+            _fabIndex = 1; //-1 is not show
           }
           break;
         case 2:
           {
             _title = 'Chat';
+            _pageIndex = 2;
             _naviBarIndex = 2;
+            _fabIndex = -1; //not show
           }
           break;
         case 3:
           {
+            _title = 'Logout';
             _naviBarIndex = 3;
+            _fabIndex = -1; //not show
             _logout();
           }
           break;
-        case 4:
+      }
+    });
+  }
+
+  void _onFabTap(int index) {
+    setState(() {
+      switch (index) {
+        case 200:
           {
-            _title = 'New Activity Log';
+            _title = 'Add Activity Log';
+            _pageIndex = 3;
+            _naviBarIndex = 0;
+            _fabIndex = 0;
+          }
+          break;
+        case 201:
+          {
+            _title = 'Upload Video';
+            _pageIndex = 4;
+            _naviBarIndex = 1;
+            _fabIndex = 1;
           }
           break;
       }
@@ -96,18 +129,26 @@ class _HomeTemplateState extends State<HomeTemplate> {
   }
 
   FloatingActionButton? _getFAB() {
-    if (_selectedIndex == 0) {
+    if (_fabIndex == 0) {
       return FloatingActionButton(
         backgroundColor: Colors.deepPurple,
         mini: false,
         onPressed: () {
-          _onItemTapped(4);
+          _onFabTap(200);
         },
         child: const Icon(Icons.add, color: Colors.white),
       );
-    } else {
-      return null;
+    } else if (_fabIndex == 1) {
+      return FloatingActionButton(
+        backgroundColor: Colors.deepPurple,
+        mini: false,
+        onPressed: () {
+          _onFabTap(201);
+        },
+        child: const Icon(Icons.video_collection, color: Colors.white),
+      );
     }
+    return null;
   }
 
   Future<void> removeSession() async {
@@ -117,14 +158,6 @@ class _HomeTemplateState extends State<HomeTemplate> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> pages = [
-      const ActivityLogs(),
-      const VideoContent(),
-      const SupaChat(),
-      const Text(''), //dummy
-      const NewActivityLog()
-    ];
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -133,15 +166,11 @@ class _HomeTemplateState extends State<HomeTemplate> {
               fontWeight: FontWeight.bold, color: Colors.deepPurple),
         ),
       ),
-
-      body: pages[_selectedIndex],
+      body: pages[_pageIndex],
       floatingActionButton: _getFAB(),
-      //bottomNavigationBar : _naviBarIndex[index];
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _naviBarIndex, //New
         onTap: _onItemTapped, //New
-        //fixedColor: Colors.deepPurple,
-        //unselectedItemColor: Colors.blue,
         type: BottomNavigationBarType.fixed,
         showUnselectedLabels: true,
         items: const <BottomNavigationBarItem>[

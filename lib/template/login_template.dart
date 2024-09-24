@@ -13,7 +13,11 @@ class LoginTemplate extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Supabase User Management'),
+          title: const Text(
+            'Supabase Lab',
+            style: TextStyle(
+                fontWeight: FontWeight.bold, color: Colors.deepPurple),
+          ),
           bottom: const TabBar(
             tabs: [
               Tab(text: 'Login'),

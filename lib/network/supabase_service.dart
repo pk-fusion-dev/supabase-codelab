@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -162,5 +164,22 @@ class SupabaseService {
                   fontSize: 16.0);
             })
         .subscribe();
+  }
+
+  Future<String> uploadFile(File file) async {
+    try {
+      final response = await supabaseClient.storage
+          .from('lab_videos') // Replace with your storage bucket name
+          .upload(
+            'uploaded/content/${file.path.split('/').last}',
+            file,
+            fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
+          );
+      dev.log(response.toString());
+      return 'SUCCESS';
+    } catch (e) {
+      dev.log(e.toString());
+      return 'ERROR';
+    }
   }
 }
