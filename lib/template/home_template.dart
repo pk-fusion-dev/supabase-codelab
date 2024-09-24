@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:supabase_lab/pages/activity_logs_page.dart';
 import 'package:supabase_lab/pages/chat_page.dart';
 import 'package:supabase_lab/pages/new_activity_log.dart';
 import 'package:supabase_lab/pages/video_content_page.dart';
+// ignore: unused_import
+import 'dart:developer' as dev;
 
 class HomeTemplate extends StatefulWidget {
   const HomeTemplate({super.key});
@@ -16,6 +19,7 @@ class _HomeTemplateState extends State<HomeTemplate> {
   int _selectedIndex = 0;
   int _naviBarIndex = 0;
   var _title = 'Activity Logs';
+  final SupabaseClient supabase = Supabase.instance.client;
 
   @override
   initState() {
@@ -109,6 +113,7 @@ class _HomeTemplateState extends State<HomeTemplate> {
     prefs.remove('username');
   }
 
+  
   @override
   Widget build(BuildContext context) {
     final List<Widget> pages = [

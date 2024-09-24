@@ -19,7 +19,8 @@ class SupabaseService {
         'email': email,
         'password': password, // Consider hashing passwords
         'username': username,
-        'role': role
+        'role': role,
+        'created_at': DateTime.now().toIso8601String(),
       });
       return 'SUCCESS';
     } catch (e) {
@@ -124,6 +125,7 @@ class SupabaseService {
     try {
       await supabaseClient.from('activity_logs').insert({
         'business_name': businessName,
+        'created_at': DateTime.now().toIso8601String(),
         'action': action,
         'username': username,
         'total_amount': totalAmount
