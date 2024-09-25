@@ -83,7 +83,7 @@ class _HomeTemplateState extends State<HomeTemplate> {
             _title = 'Add Activity Log';
             _pageIndex = 3;
             _naviBarIndex = 0;
-            _fabIndex = 0;
+            _fabIndex = -1;
           }
           break;
         case 201:
@@ -91,7 +91,7 @@ class _HomeTemplateState extends State<HomeTemplate> {
             _title = 'Upload Video';
             _pageIndex = 4;
             _naviBarIndex = 1;
-            _fabIndex = 1;
+            _fabIndex = -1;
           }
           break;
       }

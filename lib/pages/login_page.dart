@@ -40,7 +40,6 @@ class _LoginState extends State<Login> {
   }
 
   Future<void> _login() async {
-    
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     if (_formKey.currentState?.validate() ?? false) {
@@ -117,6 +116,7 @@ class _LoginState extends State<Login> {
                   TextFormField(
                       controller: _passwordController,
                       obscureText: true,
+                      //keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
                           prefixIcon: Icon(Icons.password),
                           labelText: 'Password',

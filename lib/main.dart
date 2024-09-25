@@ -1,11 +1,11 @@
+// ignore_for_file: unused_import
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_lab/network/supabase_service.dart';
-// ignore: unused_import
 import 'package:supabase_lab/template/home_template.dart';
 import 'package:supabase_lab/template/login_template.dart';
-// ignore: unused_import
 import 'dart:developer' as dev;
 
 void main() async {
@@ -18,9 +18,9 @@ void main() async {
       eventsPerSecond: 2,
     ),
   );
-  var service = SupabaseService();
-  service.streamToRealtime();
-  service.subscribeActivityLogs();
+  //var service = SupabaseService();
+  //service.streamToRealtime();
+  //service.subscribeActivityLogs();
   runApp(const MyApp());
 }
 

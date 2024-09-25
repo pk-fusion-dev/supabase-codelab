@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
@@ -32,7 +31,7 @@ class _UploadVideoState extends State<UploadVideo> {
       });
     } else {
       Fluttertoast.showToast(
-          msg: " No Video!",
+          msg: " No file seleted!",
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 1,
@@ -77,9 +76,50 @@ class _UploadVideoState extends State<UploadVideo> {
         fontSize: 16.0);
   }
 
+  Widget uploadForm() {
+    return Container(
+      padding: const EdgeInsets.all(30.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          ElevatedButton(
+            onPressed: _pickVideo,
+            child: const Text('Pick Video'),
+          ),
+          const SizedBox(
+            height: 20.0,
+          ),
+          const SizedBox(
+            height: 20.0,
+          ),
+          if (_videoFile != null) ...[
+            Text('Video selected: ${_videoFile!.path.split('/').last}'),
+            const SizedBox(
+              height: 10.0,
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                uploadFile(_videoFile!);
+                setState(() {
+                  isLoading = true;
+                });
+              },
+              child: const Text('Upload Video'),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return uploadForm();
+  }
+
+  void oldWidget() {
+    Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

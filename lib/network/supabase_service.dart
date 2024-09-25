@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -168,18 +167,34 @@ class SupabaseService {
 
   Future<String> uploadFile(File file) async {
     try {
-      final response = await supabaseClient.storage
+      // ignore: unused_local_variable
+      final res = await supabaseClient.storage
           .from('lab_videos') // Replace with your storage bucket name
           .upload(
-            'uploaded/content/${file.path.split('/').last}',
+            'sample/${file.path.split('/').last}',
             file,
             fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
           );
-      dev.log(response.toString());
+
       return 'SUCCESS';
     } catch (e) {
-      dev.log(e.toString());
       return 'ERROR';
+    }
+  }
+
+  Future<List<FileObject>> getFilesInBucket() async {
+    try {
+      // ignore: unused_local_variable
+      final res = await supabaseClient.storage.from('lab_videos').list(
+          path: 'sample',
+          searchOptions: const SearchOptions(
+              sortBy: SortBy(
+                  column: 'created_at',
+                  order: 'desc'))); // Replace with your storage bucket name
+
+      return res;
+    } catch (e) {
+      return List.empty();
     }
   }
 }

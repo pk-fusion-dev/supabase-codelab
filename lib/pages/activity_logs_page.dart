@@ -13,7 +13,7 @@ class ActivityLogs extends StatefulWidget {
 class _ActivityLogsState extends State<ActivityLogs> {
   final SupabaseService authService = SupabaseService();
   List<ActivityLog> activityList = List.empty();
-
+  bool isLoading = false;
   String today = DateUtil().today();
   String yesterday = DateUtil().yesterday();
   String selectedDate = 'Today';
@@ -22,9 +22,11 @@ class _ActivityLogsState extends State<ActivityLogs> {
   String endDate = '';
 
   loadActivityLogs(String startDate, String endDate) async {
+    isLoading = true;
     await authService.getActivityLogs(startDate, endDate).then((value) {
       setState(() {
         activityList = value;
+        isLoading = false;
       });
     });
   }
@@ -109,60 +111,63 @@ class _ActivityLogsState extends State<ActivityLogs> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      // mainAxisAlignment: MainAxisAlignment.center,
-      //crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-          Text(
-            selectedDate,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          PopupMenuButton(
-            icon: const Icon(Icons.menu_outlined),
-            onSelected: (value) {
-              _onDateSelect(value);
-            },
-            itemBuilder: (BuildContext bc) {
-              return const [
-                PopupMenuItem(
-                  value: 'Today',
-                  child: Text("Today"),
+    return isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : Column(
+            // mainAxisAlignment: MainAxisAlignment.center,
+            //crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                Text(
+                  selectedDate,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                PopupMenuItem(
-                  value: 'Yesterday',
-                  child: Text("Yesterday"),
+                PopupMenuButton(
+                  icon: const Icon(Icons.menu_outlined),
+                  onSelected: (value) {
+                    _onDateSelect(value);
+                  },
+                  itemBuilder: (BuildContext bc) {
+                    return const [
+                      PopupMenuItem(
+                        value: 'Today',
+                        child: Text("Today"),
+                      ),
+                      PopupMenuItem(
+                        value: 'Yesterday',
+                        child: Text("Yesterday"),
+                      ),
+                      PopupMenuItem(
+                        value: 'This Month',
+                        child: Text("This Month"),
+                      ),
+                      PopupMenuItem(
+                        value: 'Last Month',
+                        child: Text("Last Month"),
+                      )
+                    ];
+                  },
                 ),
-                PopupMenuItem(
-                  value: 'This Month',
-                  child: Text("This Month"),
-                ),
-                PopupMenuItem(
-                  value: 'Last Month',
-                  child: Text("Last Month"),
-                )
-              ];
-            },
-          ),
-        ]),
-        const SizedBox(
-          height: 5,
-        ),
-        activityList.isNotEmpty
-            ? Expanded(
-                child: ListView.builder(
-                    //scrollDirection: Axis.vertical,
-                    itemCount: activityList.length,
-                    itemBuilder: (context, index) =>
-                        loadActivityCard(activityList[index])),
-              )
-            : const Center(
-                child: Text(
-                'NO RECORD.',
-                style: TextStyle(
-                    color: Colors.deepPurple, fontWeight: FontWeight.bold),
-              ))
-      ],
-    );
+              ]),
+              const SizedBox(
+                height: 5,
+              ),
+              activityList.isNotEmpty
+                  ? Expanded(
+                      child: ListView.builder(
+                          //scrollDirection: Axis.vertical,
+                          itemCount: activityList.length,
+                          itemBuilder: (context, index) =>
+                              loadActivityCard(activityList[index])),
+                    )
+                  : const Center(
+                      child: Text(
+                      'NO RECORD.',
+                      style: TextStyle(
+                          color: Colors.deepPurple,
+                          fontWeight: FontWeight.bold),
+                    ))
+            ],
+          );
   }
 }
