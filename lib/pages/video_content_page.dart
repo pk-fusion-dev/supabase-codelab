@@ -12,6 +12,7 @@ class VideoContent extends StatefulWidget {
 }
 
 class _VideoContentState extends State<VideoContent> {
+  
   final SupabaseService _authService = SupabaseService();
   List<FileObject> fileList = List.empty();
   bool isLoading = false;

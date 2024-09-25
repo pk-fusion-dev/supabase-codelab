@@ -197,4 +197,16 @@ class SupabaseService {
       return List.empty();
     }
   }
+
+  Future<String?> getFilesURL(File file) async {
+    try {
+      // ignore: unused_local_variable
+      final res = supabaseClient.storage.from('lab_videos').getPublicUrl(
+          'sample/${file.path.split('/').last}'); // Replace with your storage bucket name
+      dev.log(res);
+      return res;
+    } catch (e) {
+      return null;
+    }
+  }
 }
