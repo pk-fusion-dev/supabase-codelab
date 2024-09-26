@@ -1,6 +1,7 @@
 // ignore_for_file: unused_import
 
 import 'package:flutter/material.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_lab/network/supabase_service.dart';
@@ -18,9 +19,15 @@ void main() async {
       eventsPerSecond: 2,
     ),
   );
+  
+  WidgetsFlutterBinding.ensureInitialized();
+  // Necessary initialization for package:media_kit.
+  MediaKit.ensureInitialized();
+
   //var service = SupabaseService();
   //service.streamToRealtime();
   //service.subscribeActivityLogs();
+  
   runApp(const MyApp());
 }
 

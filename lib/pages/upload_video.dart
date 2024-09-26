@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_lab/network/supabase_service.dart';
-import 'package:video_player/video_player.dart';
+import 'package:media_kit/media_kit.dart'; // Provides [Player], [Media], [Playlist] etc.
+import 'package:media_kit_video/media_kit_video.dart'; // Provides [VideoController]
 
 class UploadVideo extends StatefulWidget {
   const UploadVideo({super.key});
@@ -21,7 +22,11 @@ class _UploadVideoState extends State<UploadVideo> {
   String videoUrl = '';
   //'https://fwvrwhceufgnlvkzxjet.supabase.co/storage/v1/object/public/lab_videos/sample/SampleVideo_720x480_5mb.mp4'; // URL to the video
   String fileInfo = 'Duration: 3:45, Size: 10MB';
-  late VideoPlayerController _controller;
+
+  // Create a [Player] to control playback.
+  late final player = Player();
+  // Create a [VideoController] to handle video output from [Player].
+  late final _controller = VideoController(player);
   bool showPlayer = false;
 
   @override
@@ -33,7 +38,7 @@ class _UploadVideoState extends State<UploadVideo> {
 
   @override
   void dispose() {
-    _controller.dispose();
+    player.dispose();
     super.dispose();
   }
 
@@ -57,6 +62,7 @@ class _UploadVideoState extends State<UploadVideo> {
   }
 
   void uploadFile() async {
+    isLoading = true;
     await authService.uploadFile(_videoFile!).then((value) {
       setState(() {
         isLoading = false;
@@ -75,11 +81,7 @@ class _UploadVideoState extends State<UploadVideo> {
       setState(() {
         videoUrl = value!;
         showPlayer = true;
-        _controller = VideoPlayerController.networkUrl(Uri.parse(videoUrl))
-          ..initialize().then((_) {
-            setState(() {});
-            _controller.play();
-          });
+        player.open(Media(videoUrl), play: false);
       });
     });
   }
@@ -146,7 +148,12 @@ class _UploadVideoState extends State<UploadVideo> {
 
   @override
   Widget build(BuildContext context) {
-    return uploadForm();
+    return Column(
+      children: [
+        uploadForm(),
+        isLoading ? const CircularProgressIndicator() : const SizedBox.shrink(),
+      ],
+    );
   }
 
   Widget videoWidget() {
@@ -154,6 +161,12 @@ class _UploadVideoState extends State<UploadVideo> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const SizedBox(
+            height: 20,
+          ),
+          isLoading
+              ? const CircularProgressIndicator()
+              : const SizedBox.shrink(),
           // Title Row
           Padding(
             padding: const EdgeInsets.all(10.0),
@@ -163,28 +176,12 @@ class _UploadVideoState extends State<UploadVideo> {
             ),
           ),
           // Video Player Row
-          AspectRatio(
-            aspectRatio: 16 / 9,
-            child: _controller.value.isInitialized
-                ? VideoPlayer(_controller)
-                : const Center(child: CircularProgressIndicator()),
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.width * 9.0 / 16.0,
+            child: Video(controller: _controller),
           ),
           // File Info Row
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  _controller.value.isPlaying
-                      ? _controller.pause()
-                      : _controller.play();
-                });
-              },
-              child: Text(
-                _controller.value.isPlaying ? 'Pause' : 'Play',
-              ),
-            ),
-          ),
         ],
       ),
     );
