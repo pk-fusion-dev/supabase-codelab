@@ -9,6 +9,8 @@ import 'package:supabase_lab/template/home_template.dart';
 import 'package:supabase_lab/template/login_template.dart';
 import 'dart:developer' as dev;
 
+import 'package:supabase_lab/theme/fusion_theme.dart';
+
 void main() async {
   await dotenv.load(fileName: ".env");
   await Supabase.initialize(
@@ -19,7 +21,7 @@ void main() async {
       eventsPerSecond: 2,
     ),
   );
-  
+
   WidgetsFlutterBinding.ensureInitialized();
   // Necessary initialization for package:media_kit.
   MediaKit.ensureInitialized();
@@ -27,7 +29,7 @@ void main() async {
   //var service = SupabaseService();
   //service.streamToRealtime();
   //service.subscribeActivityLogs();
-  
+
   runApp(const MyApp());
 }
 
@@ -40,10 +42,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-          colorSchemeSeed: const Color.fromARGB(255, 53, 55, 66),
-          useMaterial3: true),
+      theme: AppTheme.fusionBlue,
       initialRoute: 'login_screen',
+
       //home: Home()
       routes: {
         'login_screen': (context) => const LoginTemplate(),

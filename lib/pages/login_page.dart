@@ -101,16 +101,9 @@ class _LoginState extends State<Login> {
                   TextFormField(
                       controller: _userNameController,
                       decoration: const InputDecoration(
-                          labelText: 'Username',
-                          //helperText: 'Username is requird!',
-                          prefixIcon: Icon(Icons.person),
-                          //errorText: 'Username is empty!',
-                          focusedBorder: OutlineInputBorder(
-                              //borderRadius: BorderRadius.circular(20)
-                              ),
-                          border: OutlineInputBorder(
-                              //borderRadius: BorderRadius.all(Radius.circular(4.0))
-                              )),
+                        labelText: 'Username',
+                        prefixIcon: Icon(Icons.person),
+                      ),
                       validator: _validateUserName),
                   const SizedBox(height: 10),
                   TextFormField(
@@ -119,17 +112,12 @@ class _LoginState extends State<Login> {
                       //keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
                           prefixIcon: Icon(Icons.password),
-                          labelText: 'Password',
-                          //helperText: 'Password is requird!',
-                          //errorText: 'Username is empty!',
-                          border: OutlineInputBorder(
-                              //borderRadius: BorderRadius.all(Radius.circular(4.0))
-                              )),
+                          labelText: 'Password'),
                       validator: _validatePassword),
                   const SizedBox(height: 20),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepPurple,
+                      //backgroundColor: Colors.deepPurple,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5.0),
                       ),
@@ -137,10 +125,8 @@ class _LoginState extends State<Login> {
                           double.infinity, 50), // Set minimum width and height
                     ),
                     onPressed: _login,
-                    child: const Text(
-                      'LOGIN',
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    child: Text('LOGIN',
+                        style: Theme.of(context).textTheme.labelMedium),
                   ),
                 ],
               ),

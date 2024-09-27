@@ -184,7 +184,7 @@ class _NewActivityLogState extends State<NewActivityLog> {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepPurple,
+                      //backgroundColor: Colors.deepPurple,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5.0),
                       ),
@@ -192,10 +192,8 @@ class _NewActivityLogState extends State<NewActivityLog> {
                           double.infinity, 50), // Set minimum width and height
                     ),
                     onPressed: _submitForm,
-                    child: const Text(
-                      'SAVE',
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    child: Text('SAVE',
+                        style: Theme.of(context).textTheme.labelMedium),
                   ),
                 ],
               ),

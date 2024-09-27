@@ -80,7 +80,7 @@ class _HomeTemplateState extends State<HomeTemplate> {
       switch (index) {
         case 200:
           {
-            _title = 'Add Activity Log';
+            _title = 'New Activity Log';
             _pageIndex = 3;
             _naviBarIndex = 0;
             _fabIndex = -1;
@@ -131,7 +131,7 @@ class _HomeTemplateState extends State<HomeTemplate> {
   FloatingActionButton? _getFAB() {
     if (_fabIndex == 0) {
       return FloatingActionButton(
-        backgroundColor: Colors.deepPurple,
+        //backgroundColor: Colors.deepPurple,
         mini: false,
         onPressed: () {
           _onFabTap(200);
@@ -140,7 +140,7 @@ class _HomeTemplateState extends State<HomeTemplate> {
       );
     } else if (_fabIndex == 1) {
       return FloatingActionButton(
-        backgroundColor: Colors.deepPurple,
+        //backgroundColor: Colors.deepPurple,
         mini: false,
         onPressed: () {
           _onFabTap(201);
@@ -162,8 +162,6 @@ class _HomeTemplateState extends State<HomeTemplate> {
       appBar: AppBar(
         title: Text(
           _title,
-          style: const TextStyle(
-              fontWeight: FontWeight.bold, color: Colors.deepPurple),
         ),
       ),
       body: pages[_pageIndex],

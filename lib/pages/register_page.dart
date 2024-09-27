@@ -130,13 +130,9 @@ class _RegisterState extends State<Register> {
                     controller: _emailController,
                     obscureText: false,
                     decoration: const InputDecoration(
-                        prefixIcon: Icon(Icons.email),
-                        labelText: 'Email',
-                        //helperText: 'Password is requird!',
-                        //errorText: 'Username is empty!',
-                        border: OutlineInputBorder(
-                            //borderRadius: BorderRadius.all(Radius.circular(4.0))
-                            )),
+                      prefixIcon: Icon(Icons.email),
+                      labelText: 'Email',
+                    ),
                     validator: _validateEmail),
                 const SizedBox(height: 10),
                 TextFormField(
@@ -144,12 +140,7 @@ class _RegisterState extends State<Register> {
                     obscureText: true,
                     decoration: const InputDecoration(
                         prefixIcon: Icon(Icons.password),
-                        labelText: 'Password',
-                        //helperText: 'Password is requird!',
-                        //errorText: 'Username is empty!',
-                        border: OutlineInputBorder(
-                            //borderRadius: BorderRadius.all(Radius.circular(4.0))
-                            )),
+                        labelText: 'Password'),
                     validator: _validatePassword),
                 const SizedBox(height: 10),
                 Container(
@@ -182,7 +173,7 @@ class _RegisterState extends State<Register> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurple,
+                    //backgroundColor: Colors.deepPurple,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
@@ -190,10 +181,8 @@ class _RegisterState extends State<Register> {
                         double.infinity, 50), // Set minimum width and height
                   ),
                   onPressed: _submitForm,
-                  child: const Text(
-                    'REGISTER',
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  child: Text('REGISTER',
+                      style: Theme.of(context).textTheme.labelMedium),
                 ),
               ],
             ),

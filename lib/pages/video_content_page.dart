@@ -12,7 +12,6 @@ class VideoContent extends StatefulWidget {
 }
 
 class _VideoContentState extends State<VideoContent> {
-  
   final SupabaseService _authService = SupabaseService();
   List<FileObject> fileList = List.empty();
   bool isLoading = false;
@@ -37,12 +36,14 @@ class _VideoContentState extends State<VideoContent> {
     ByteConverter converter = ByteConverter(size.toDouble());
     return Card(
       child: ListTile(
-        leading: const Icon(Icons.ondemand_video),
+        leading: const Icon(
+          Icons.ondemand_video,
+        ),
         title: Text(' ${file.name}'),
         subtitle:
             Text('${converter.megaBytes} Mb ${file.metadata?['mimetype']} '),
         trailing: CircleAvatar(
-          backgroundColor: Colors.deepPurple,
+          backgroundColor: Colors.blueAccent,
           radius: 12,
           child: InkWell(
             child: const Icon(

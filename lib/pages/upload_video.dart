@@ -112,11 +112,20 @@ class _UploadVideoState extends State<UploadVideo> {
     return Container(
       padding: const EdgeInsets.all(30.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              //backgroundColor: Colors.deepPurple,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+              minimumSize: const Size(
+                  double.infinity, 50), // Set minimum width and height
+            ),
             onPressed: _pickVideo,
-            child: const Text('Pick Video'),
+            child: Text('Pick Video',
+                style: Theme.of(context).textTheme.labelMedium),
           ),
           const SizedBox(
             height: 20.0,
@@ -131,13 +140,24 @@ class _UploadVideoState extends State<UploadVideo> {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                //backgroundColor: Colors.deepPurple,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                minimumSize: const Size(
+                    double.infinity, 50), // Set minimum width and height
+              ),
               onPressed: () {
                 uploadFile();
                 setState(() {
                   isLoading = true;
                 });
               },
-              child: const Text('Upload Video'),
+              child: Text(
+                'Upload Video',
+                style: Theme.of(context).textTheme.labelMedium,
+              ),
             ),
             showPlayer ? videoWidget() : const SizedBox.shrink()
           ],
@@ -172,7 +192,7 @@ class _UploadVideoState extends State<UploadVideo> {
             padding: const EdgeInsets.all(10.0),
             child: Text(
               title,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
           ),
           // Video Player Row

@@ -15,8 +15,6 @@ class LoginTemplate extends StatelessWidget {
         appBar: AppBar(
           title: const Text(
             'Supabase Lab',
-            style: TextStyle(
-                fontWeight: FontWeight.bold, color: Colors.deepPurple),
           ),
           bottom: const TabBar(
             tabs: [

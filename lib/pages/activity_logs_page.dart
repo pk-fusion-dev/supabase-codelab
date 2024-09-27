@@ -16,7 +16,7 @@ class _ActivityLogsState extends State<ActivityLogs> {
   bool isLoading = false;
   String today = DateUtil().today();
   String yesterday = DateUtil().yesterday();
-  String selectedDate = 'Today';
+  String selectedDate = 'This Month';
   DateTime now = DateTime.now();
   String startDate = '';
   String endDate = '';
@@ -60,13 +60,9 @@ class _ActivityLogsState extends State<ActivityLogs> {
 
   Widget loadActivityCard(ActivityLog log) {
     return Card(
-      elevation: 5,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-        side: const BorderSide(color: Colors.grey, width: 1),
-      ),
+      elevation: 0,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(12.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -75,31 +71,29 @@ class _ActivityLogsState extends State<ActivityLogs> {
               children: [
                 Text(
                   '${log.businessName}',
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.headlineMedium,
                 ),
                 Text(
                   '${log.action}',
-                  style: const TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.displayMedium,
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   '${log.createdAt!.day}/${log.createdAt!.month}/${log.createdAt!.year}',
-                  style: const TextStyle(fontSize: 14),
+                  style: Theme.of(context).textTheme.displaySmall,
                 ),
                 Text(
                   '${log.totalAmount} MMK',
-                  style: const TextStyle(fontSize: 14),
+                  style: Theme.of(context).textTheme.displaySmall,
                 ),
                 Text(
                   '${log.username}',
-                  style: const TextStyle(fontSize: 14),
+                  style: Theme.of(context).textTheme.displaySmall,
                 ),
               ],
             ),
@@ -118,10 +112,8 @@ class _ActivityLogsState extends State<ActivityLogs> {
             //crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                Text(
-                  selectedDate,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
+                Text(selectedDate,
+                    style: Theme.of(context).textTheme.displayMedium),
                 PopupMenuButton(
                   icon: const Icon(Icons.menu_outlined),
                   onSelected: (value) {
