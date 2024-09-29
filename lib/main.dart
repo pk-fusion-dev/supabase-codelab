@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
       //home: Home()
       routes: {
         'login_screen': (context) => const LoginTemplate(),
-        'home_screen': (context) => const HomeTemplate()
+        'home_screen': (context) => const HomeTemplate(),
       },
     );
   }

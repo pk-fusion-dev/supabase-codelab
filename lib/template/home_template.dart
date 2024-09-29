@@ -26,9 +26,9 @@ class _HomeTemplateState extends State<HomeTemplate> {
   final List<Widget> pages = [
     const ActivityLogs(),
     const VideoContent(),
-    const SupaChat(),
+    const ChatUserPage(),
     const NewActivityLog(),
-    const UploadVideo()
+    const UploadVideo(),
   ];
 
   @override
@@ -60,7 +60,7 @@ class _HomeTemplateState extends State<HomeTemplate> {
             _title = 'Chat';
             _pageIndex = 2;
             _naviBarIndex = 2;
-            _fabIndex = -1; //not show
+            _fabIndex = -1;
           }
           break;
         case 3:
@@ -91,6 +91,14 @@ class _HomeTemplateState extends State<HomeTemplate> {
             _title = 'Upload Video';
             _pageIndex = 4;
             _naviBarIndex = 1;
+            _fabIndex = -1;
+          }
+          break;
+        case 202:
+          {
+            _title = 'Chat';
+            _pageIndex = 5;
+            _naviBarIndex = 2;
             _fabIndex = -1;
           }
           break;
