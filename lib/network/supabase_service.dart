@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:supabase_lab/model/activity_logs.dart';
+import 'package:supabase_lab/model/mesage.dart';
 import 'dart:async';
 import 'package:supabase_lab/model/user_model.dart';
-import 'dart:developer' as dev;
+//import 'dart:developer' as dev;
 
 class SupabaseService {
   final SupabaseClient supabaseClient = Supabase.instance.client;
@@ -76,7 +77,6 @@ class SupabaseService {
       FusionUser fusionUser = FusionUser.fromJson(res.single);
       return fusionUser;
     } catch (e) {
-      dev.log(e.toString());
       return FusionUser();
     }
   }
@@ -203,10 +203,65 @@ class SupabaseService {
       // ignore: unused_local_variable
       final res = supabaseClient.storage.from('lab_videos').getPublicUrl(
           'sample/${file.path.split('/').last}'); // Replace with your storage bucket name
-      dev.log(res);
+
       return res;
     } catch (e) {
       return null;
     }
   }
+
+  Future<void> saveMessage(
+      String userFrom, String userTo, String content) async {
+    try {
+      final message =
+          Message.create(content: content, userFrom: userFrom, userTo: userTo);
+
+      await supabaseClient.from('message').insert(message.toMap());
+      // ignore: empty_catches
+    } catch (e) {}
+  }
+
+  Future<void> markAsRead(String messageId) async {
+    await supabaseClient
+        .from('message')
+        .update({'mark_as_read': true}).eq('id', messageId);
+  }
+
+  Stream<List<Message?>> getMessages(String currentUser, String userTo) {
+    var msg = supabaseClient
+        .from('message')
+        .stream(primaryKey: ['id'])
+        .order('created_at')
+        .map((maps) => maps
+            .map((item) {
+              if ((item['user_from'] == currentUser &&
+                      item['user_to'] == userTo) ||
+                  (item['user_from'] == userTo &&
+                      item['user_to'] == currentUser)) {
+                return Message.fromJson(item, currentUser);
+              }
+            })
+            .where((item) => item != null)
+            .toList());
+
+    return msg;
+  }
 }
+
+
+//            .map((item) => Message.fromJson(item, user))
+
+/*
+  Stream<List<Message>> getMessages(String currentUser) {
+    dev.log('in stream');
+    return supabaseClient
+        .from('message')
+        
+        .stream(primaryKey: ['id'])
+        .order('created_at')
+        .map((maps) => maps.map((item) {
+              dev.log(item['content']);
+              return Message.fromJson(item, currentUser);
+            }).toList());
+  }
+  */

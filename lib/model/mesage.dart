@@ -1,11 +1,11 @@
 class Message {
-  final String id;
-  final String content;
-  final bool markAsRead;
-  final String userFrom;
-  final String userTo;
-  final DateTime createAt;
-  final bool isMine;
+  int? id;
+  String content;
+  bool markAsRead;
+  String userFrom;
+  String userTo;
+  DateTime createAt;
+  bool isMine;
 
   Message({
     required this.id,
@@ -19,19 +19,18 @@ class Message {
 
   Message.create(
       {required this.content, required this.userFrom, required this.userTo})
-      : id = '',
-        markAsRead = false,
+      : markAsRead = false,
         isMine = true,
         createAt = DateTime.now();
 
-  Message.fromJson(Map<String, dynamic> json, String userId)
-      : id = json['id'],
+  Message.fromJson(Map<String, dynamic> json, String userFrom)
+      : id = json['id'] as int,
         content = json['content'],
         markAsRead = json['mark_as_read'],
         userFrom = json['user_from'],
         userTo = json['user_to'],
         createAt = DateTime.parse(json['created_at']),
-        isMine = json['user_from'] == userId;
+        isMine = json['user_from'] == userFrom;
 
   Map toMap() {
     return {
