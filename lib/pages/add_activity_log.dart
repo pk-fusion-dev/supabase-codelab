@@ -69,7 +69,9 @@ class _NewActivityLogState extends State<NewActivityLog> {
               _username, int.parse(_amountController.text))
           .then((value) {
         if (value == 'SUCCESS') {
-          Navigator.pushReplacementNamed(context, 'home_screen');
+          if (mounted) {
+            Navigator.pushReplacementNamed(context, 'home_screen');
+          }
         }
         clearInput();
       });

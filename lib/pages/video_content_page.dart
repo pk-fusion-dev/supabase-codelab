@@ -1,3 +1,4 @@
+
 import 'package:byte_converter/byte_converter.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -31,6 +32,17 @@ class _VideoContentState extends State<VideoContent> {
         });
   }
 
+  void deleteFile(String fileName) async {
+    await _authService.deleteFile(fileName).then((value) {
+      setState(() {
+        isLoading = false;
+      });
+      if (value == 'SUCCESS') {
+        loadFilesList();
+      } else {}
+    });
+  }
+
   Widget getfileCard(FileObject file) {
     int size = (file.metadata?['size']);
     ByteConverter converter = ByteConverter(size.toDouble());
@@ -47,17 +59,18 @@ class _VideoContentState extends State<VideoContent> {
           radius: 12,
           child: InkWell(
             child: const Icon(
-              Icons.play_arrow,
+              Icons.delete_sharp,
               color: Colors.white,
               size: 15,
             ),
             onTap: () {
+              deleteFile(file.name);
               Fluttertoast.showToast(
-                  msg: " ${file.name} is clicked.",
+                  msg: " ${file.name} is deleted.",
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.BOTTOM,
                   timeInSecForIosWeb: 1,
-                  backgroundColor: Colors.purple,
+                  backgroundColor: Colors.blue,
                   textColor: Colors.white,
                   fontSize: 16.0);
             },

@@ -176,6 +176,21 @@ class SupabaseService {
             fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
           );
 
+      // Local file cleanup
+      if (file.existsSync()) file.deleteSync();
+      return 'SUCCESS';
+    } catch (e) {
+      return 'ERROR';
+    }
+  }
+
+  Future<String> deleteFile(String fileName) async {
+    try {
+      // ignore: unused_local_variable
+      final res = await supabaseClient.storage
+          .from('lab_videos') // Replace with your storage bucket name
+          .remove(['sample/$fileName']);
+
       return 'SUCCESS';
     } catch (e) {
       return 'ERROR';

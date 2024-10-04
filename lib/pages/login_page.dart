@@ -49,7 +49,9 @@ class _LoginState extends State<Login> {
         fusionUser = value;
         if (fusionUser.username != null) {
           prefs.setString('username', fusionUser.username!);
-          Navigator.pushReplacementNamed(context, 'home_screen');
+          if (mounted) {
+            Navigator.pushReplacementNamed(context, 'home_screen');
+          }
         } else {
           _showErrorToast('Invalid User');
         }

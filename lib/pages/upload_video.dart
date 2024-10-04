@@ -1,4 +1,9 @@
+import 'dart:async';
+import 'dart:developer' as dev;
 import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,7 +22,7 @@ class _UploadVideoState extends State<UploadVideo> {
   final SupabaseService authService = SupabaseService();
   File? _videoFile;
   bool isLoading = false;
-
+  late Uint8List fileBytes;
   String title = 'Video From Supabase';
   String videoUrl = '';
   //'https://fwvrwhceufgnlvkzxjet.supabase.co/storage/v1/object/public/lab_videos/sample/SampleVideo_720x480_5mb.mp4'; // URL to the video
@@ -28,6 +33,7 @@ class _UploadVideoState extends State<UploadVideo> {
   // Create a [VideoController] to handle video output from [Player].
   late final _controller = VideoController(player);
   bool showPlayer = false;
+  double _uploadProgress = 0.0;
 
   @override
   void initState() {
@@ -46,6 +52,9 @@ class _UploadVideoState extends State<UploadVideo> {
     final pickedFile =
         await ImagePicker().pickVideo(source: ImageSource.gallery);
     if (pickedFile != null) {
+      await pickedFile.readAsBytes().then((onValue) {
+        fileBytes = onValue;
+      });
       setState(() {
         _videoFile = File(pickedFile.path);
       });
@@ -74,6 +83,40 @@ class _UploadVideoState extends State<UploadVideo> {
         _showErrorToast();
       }
     });
+  }
+
+  void uploadFileProcess() async {
+    final uri = Uri.parse(
+        'https://fwvrwhceufgnlvkzxjet.supabase.co/storage/v1/object/lab_videos/sample/${_videoFile!.path.split('/').last}');
+    final request = http.MultipartRequest('POST', uri);
+    request.headers['Authorization'] =
+        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ3dnJ3aGNldWZnbmx2a3p4amV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzODQ4MTIsImV4cCI6MjA0MTk2MDgxMn0.sCw_C0y2AUjxaQWzJlHzDwKqMp0x8O425RZrdvIWkAY';
+
+    int total = _videoFile!.lengthSync();
+    int bytesTransferred = 0;
+
+    request.files.add(http.MultipartFile.fromBytes(
+        'file', await _videoFile!.readAsBytes(),
+        filename: _videoFile!.path.split('/').last));
+    final responseStream = request.send().asStream();
+
+    responseStream.listen(
+      (streamedResponse) {
+        streamedResponse.stream.listen(
+          (value) {
+            bytesTransferred += value.length;
+            setState(() {
+              _uploadProgress = bytesTransferred / total;
+              dev.log('$_uploadProgress% completed.');
+            });
+          },
+          onDone: () => dev.log('Upload complete!'),
+          onError: (e) => dev.log('Error: $e'),
+          cancelOnError: true,
+        );
+      },
+    );
+    // await streamedResponse.stream.drain();
   }
 
   void loadVideo() async {
@@ -148,8 +191,9 @@ class _UploadVideoState extends State<UploadVideo> {
                 minimumSize: const Size(
                     double.infinity, 50), // Set minimum width and height
               ),
-              onPressed: () {
-                uploadFile();
+              onPressed: () async {
+                //uploadFile();
+                uploadFileProcess();
                 setState(() {
                   isLoading = true;
                 });
@@ -171,7 +215,9 @@ class _UploadVideoState extends State<UploadVideo> {
     return Column(
       children: [
         uploadForm(),
-        isLoading ? const CircularProgressIndicator() : const SizedBox.shrink(),
+        isLoading
+            ? LinearProgressIndicator(value: _uploadProgress)
+            : const SizedBox.shrink(),
       ],
     );
   }

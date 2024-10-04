@@ -86,6 +86,7 @@ class AppTheme {
           elevation: 0.0,
           backgroundColor: Colors.white,
           unselectedItemColor: Colors.grey,
-          selectedItemColor: Colors.blueAccent),
+          selectedItemColor: Colors.blueAccent
+          ),
       useMaterial3: true);
 }

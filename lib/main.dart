@@ -8,7 +8,6 @@ import 'package:supabase_lab/network/supabase_service.dart';
 import 'package:supabase_lab/template/home_template.dart';
 import 'package:supabase_lab/template/login_template.dart';
 import 'dart:developer' as dev;
-
 import 'package:supabase_lab/theme/fusion_theme.dart';
 
 void main() async {
