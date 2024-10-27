@@ -174,6 +174,7 @@ class SupabaseService {
             'sample/${file.path.split('/').last}',
             file,
             fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
+            
           );
 
       // Local file cleanup

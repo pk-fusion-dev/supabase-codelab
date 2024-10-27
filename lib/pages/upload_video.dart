@@ -1,4 +1,5 @@
 import 'dart:async';
+// ignore: unused_import
 import 'dart:developer' as dev;
 import 'dart:io';
 import 'dart:typed_data';
@@ -9,7 +10,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_lab/network/supabase_service.dart';
 import 'package:media_kit/media_kit.dart'; // Provides [Player], [Media], [Playlist] etc.
-import 'package:media_kit_video/media_kit_video.dart'; // Provides [VideoController]
+import 'package:media_kit_video/media_kit_video.dart';
+// Provides [VideoController]
 
 class UploadVideo extends StatefulWidget {
   const UploadVideo({super.key});
@@ -93,13 +95,12 @@ class _UploadVideoState extends State<UploadVideo> {
         'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ3dnJ3aGNldWZnbmx2a3p4amV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYzODQ4MTIsImV4cCI6MjA0MTk2MDgxMn0.sCw_C0y2AUjxaQWzJlHzDwKqMp0x8O425RZrdvIWkAY';
 
     int total = _videoFile!.lengthSync();
-    int bytesTransferred = 0;
 
     request.files.add(http.MultipartFile.fromBytes(
         'file', await _videoFile!.readAsBytes(),
         filename: _videoFile!.path.split('/').last));
-    final responseStream = request.send().asStream();
 
+/*
     responseStream.listen(
       (streamedResponse) {
         streamedResponse.stream.listen(
@@ -116,6 +117,25 @@ class _UploadVideoState extends State<UploadVideo> {
         );
       },
     );
+    */
+    request.send().asStream().listen((response) {
+      int bytesSent = 0;
+      response.stream.listen((chunk) {
+        bytesSent += chunk.length;
+        final progress = bytesSent / total;
+       
+        dev.log(progress.toString());
+        setState(() {
+          _uploadProgress = progress;
+        });
+      }, onDone: () {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Upload Complete')));
+      }, onError: (e) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Upload failed: $e')));
+      });
+    });
     // await streamedResponse.stream.drain();
   }
 
@@ -194,6 +214,7 @@ class _UploadVideoState extends State<UploadVideo> {
               onPressed: () async {
                 //uploadFile();
                 uploadFileProcess();
+
                 setState(() {
                   isLoading = true;
                 });
