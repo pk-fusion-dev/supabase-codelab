@@ -1,9 +1,10 @@
-// ignore_for_file: unused_import
+// ignore_for_file: unused_import, unused_local_variable
 
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:supabase_lab/model/lead_model.dart';
 import 'package:supabase_lab/network/supabase_service.dart';
 import 'package:supabase_lab/template/home_template.dart';
 import 'package:supabase_lab/template/login_template.dart';
@@ -25,10 +26,33 @@ void main() async {
   // Necessary initialization for package:media_kit.
   MediaKit.ensureInitialized();
 
-  //var service = SupabaseService();
+  var service = SupabaseService();
   //service.streamToRealtime();
   //service.subscribeActivityLogs();
+  LeadModel lead = LeadModel(
+      name: 'SPA Store',
+      phone: '096654332',
+      source: 'ADS',
+      app: 'FusionPOS_PC',
+      action: 'Trial',
+      remark: 'ph call',
+      userId: 2);
+  //service.saveLeadModel(lead);
 
+  LeadModel leadModel = LeadModel(
+      id: 2,
+      name: 'MTK Store',
+      phone: '095418000',
+      source: 'reg',
+      app: 'RS',
+      action: 'viber_call',
+      remark: 'trial',
+      userId: 1);
+      
+  //service.updateLeadModel(leadModel);
+  //service.leadsByKeyword('MTK');
+
+  service.leadsByFilter('all', 'all', '2024-11-01 00:00:00', '2024-11-02 23:59:59');
   runApp(const MyApp());
 }
 

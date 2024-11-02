@@ -1,8 +1,10 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:supabase_lab/model/activity_logs.dart';
+import 'package:supabase_lab/model/lead_model.dart';
 import 'package:supabase_lab/model/mesage.dart';
 import 'dart:async';
 import 'package:supabase_lab/model/user_model.dart';
@@ -174,7 +176,6 @@ class SupabaseService {
             'sample/${file.path.split('/').last}',
             file,
             fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
-            
           );
 
       // Local file cleanup
@@ -261,12 +262,8 @@ class SupabaseService {
             .toList());
 
     return msg;
-  }
-}
-
 
 //            .map((item) => Message.fromJson(item, user))
-
 /*
   Stream<List<Message>> getMessages(String currentUser) {
     dev.log('in stream');
@@ -281,3 +278,119 @@ class SupabaseService {
             }).toList());
   }
   */
+  }
+
+  //leads module
+
+  Future<LeadModel> saveLeadModel(LeadModel lead) async {
+    try {
+      final res = await supabaseClient.from('leads').insert({
+        'created_at': DateTime.now().toIso8601String(),
+        'name': lead.name,
+        'phone': lead.phone,
+        'source': lead.source,
+        'app': lead.app,
+        'action': lead.action,
+        'remark': lead.remark,
+        'user_id': lead.userId
+      }).select();
+      LeadModel leadModel = LeadModel.fromJson(res.single);
+
+      return leadModel;
+    } catch (e) {
+      return LeadModel();
+    }
+    //app {POS_PC,POS_Mobile,RS,Future_App}
+    //action{phone_call,viber_connect,trial,video_tutorials,online_training}
+    //source{registration,ads,fb_group,google,on_ground,fb_page}
+  }
+
+  Future<LeadModel> updateLeadModel(LeadModel lead) async {
+    try {
+      final res = await supabaseClient
+          .from('leads')
+          .update({
+            'name': lead.name,
+            'phone': lead.phone,
+            'source': lead.source,
+            'app': lead.app,
+            'action': lead.action,
+            'remark': lead.remark,
+            'user_id': lead.userId
+          })
+          .eq('id', lead.id as int)
+          .select();
+      LeadModel leadModel = LeadModel.fromJson(res.single);
+      return leadModel;
+    } catch (e) {
+      return LeadModel();
+    }
+  }
+
+  Future<List<LeadModel>> findAllLeads() async {
+    List<LeadModel> leads = List.empty();
+    try {
+      final res = await supabaseClient
+          .from('leads')
+          .select()
+          .order('created_at', ascending: false);
+      ;
+
+      leads = res.map((e) => LeadModel.fromJson(e)).toList();
+
+      return leads;
+    } catch (e) {
+      return leads;
+    }
+  }
+
+  Future<List<LeadModel>> leadsByKeyword(String keyword) async {
+    List<LeadModel> leads = List.empty();
+    try {
+      final res = await supabaseClient
+          .from('leads')
+          .select()
+          .ilike('name', '$keyword%')
+          .order('created_at', ascending: false);
+      ;
+
+      leads = res.map((e) => LeadModel.fromJson(e)).toList();
+
+      return leads;
+    } catch (e) {
+      return leads;
+    }
+  }
+
+//
+  Future<List<LeadModel>> leadsByFilter(
+      String source, String app, String startDate, String endDate) async {
+    List<LeadModel> leads = List.empty();
+    List<LeadModel> filterLeads = List.empty();
+    try {
+      final res = await supabaseClient
+          .from('leads')
+          .select()
+          .gte('created_at', (startDate)) //format 2024-08-01 00:00:00
+          .lte('created_at', (endDate))
+          .order('created_at', ascending: false); //format 22024-09-30 23:59:59
+
+      leads = res.map((e) => LeadModel.fromJson(e)).toList();
+
+      if (source.toLowerCase() == 'all' && app.toLowerCase() == 'all') {
+        filterLeads = leads;
+      } else {
+        // filterLeads = leads.where((lead){
+        //   return lead.app == app && lead.source == source;
+        // }).toList();
+      }
+      for (LeadModel model in filterLeads) {
+        log(model.toString());
+      }
+
+      return filterLeads;
+    } catch (e) {
+      return filterLeads;
+    }
+  }
+}
