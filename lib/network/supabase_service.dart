@@ -363,7 +363,7 @@ class SupabaseService {
 
 //
   /*
-    CREATE OR REPLACE FUNCTION codelab.sql_query(sql TEXT) RETURNS TABLE(
+    CREATE OR REPLACE FUNCTION codelab.leads_sql_query(sql TEXT) RETURNS TABLE(
     id bigint,
     created_at timestamp,
     name text,
@@ -399,7 +399,7 @@ class SupabaseService {
     try {
       final res = await supabaseClient
           .schema('codelab')
-          .rpc('sql_query', params: {'sql': query}).select().order('created_at', ascending: false);
+          .rpc('leads_sql_query', params: {'sql': query}).select().order('created_at', ascending: false);
 
 
       leads = res.map((e) => LeadModel.fromJson(e)).toList();
