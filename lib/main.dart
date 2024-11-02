@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:supabase_lab/model/followup_model.dart';
 import 'package:supabase_lab/model/lead_model.dart';
 import 'package:supabase_lab/network/supabase_service.dart';
 import 'package:supabase_lab/template/home_template.dart';
@@ -51,8 +52,22 @@ void main() async {
 
   //service.updateLeadModel(leadModel);
   //service.leadsByKeyword('MTK');
+  //service.leadsByFilter('ADS', 'FusionPOS_PC', '2024-11-01 00:00:00', '2024-11-02 23:59:59');
 
-  service.leadsByFilter('ADS', 'FusionPOS_PC', '2024-11-01 00:00:00', '2024-11-02 23:59:59');
+  FollowupModel followupModel = FollowupModel(
+      id: 2,
+      name: 'Daw Khin Aye & Son',
+      phone: '0988876765',
+      isActive: true,
+      consumerBehavior: 'offline_mode',
+      remark: 'remark',
+      userId: 3);
+
+  //service.saveFollowupModel(followupModel);
+  //service.updateFollowupModel(followupModel);
+  //service.findAllFollowups();
+  //service.followupsByKeyword('d');
+  service.followupsByFilter('recommanded', '2024-11-01 00:00:00', '2024-11-02 23:59:59');
   runApp(const MyApp());
 }
 

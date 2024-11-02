@@ -1,9 +1,12 @@
+// ignore_for_file: unused_import
+
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:supabase_lab/model/activity_logs.dart';
+import 'package:supabase_lab/model/followup_model.dart';
 import 'package:supabase_lab/model/lead_model.dart';
 import 'package:supabase_lab/model/mesage.dart';
 import 'dart:async';
@@ -280,7 +283,7 @@ class SupabaseService {
   */
   }
 
-  //leads module
+  //--------------leads module-----------------
 
   Future<LeadModel> saveLeadModel(LeadModel lead) async {
     try {
@@ -334,7 +337,6 @@ class SupabaseService {
           .from('leads')
           .select()
           .order('created_at', ascending: false);
-      ;
 
       leads = res.map((e) => LeadModel.fromJson(e)).toList();
 
@@ -352,7 +354,7 @@ class SupabaseService {
           .select()
           .ilike('name', '$keyword%')
           .order('created_at', ascending: false);
-      
+
       leads = res.map((e) => LeadModel.fromJson(e)).toList();
 
       return leads;
@@ -379,11 +381,10 @@ class SupabaseService {
     $$ LANGUAGE plpgsql;
     */
 
-  //select codelab.sql_query('select * from codelab.leads');
+  //select codelab.leads_sql_query('select * from codelab.leads');
 
   Future<List<LeadModel>> leadsByFilter(
       String source, String app, String startDate, String endDate) async {
-
     List<LeadModel> leads = List.empty();
     var query =
         'SELECT * FROM leads WHERE created_at BETWEEN \'$startDate\' AND \'$endDate\' ';
@@ -399,17 +400,138 @@ class SupabaseService {
     try {
       final res = await supabaseClient
           .schema('codelab')
-          .rpc('leads_sql_query', params: {'sql': query}).select().order('created_at', ascending: false);
-
+          .rpc('leads_sql_query', params: {'sql': query})
+          .select()
+          .order('created_at', ascending: false);
 
       leads = res.map((e) => LeadModel.fromJson(e)).toList();
-      for (LeadModel model in leads) {
-        log(model.toString());
-      }
 
       return leads;
     } catch (e) {
       return leads;
+    }
+  }
+
+  //--------------Followup module-----------------
+
+  Future<FollowupModel> saveFollowupModel(FollowupModel model) async {
+    try {
+      final res = await supabaseClient.from('followups').insert({
+        'created_at': DateTime.now().toIso8601String(),
+        'name': model.name,
+        'phone': model.phone,
+        'is_active': model.isActive,
+        'consumer_behavior': model.consumerBehavior,
+        'remark': model.remark,
+        'user_id': model.userId
+      }).select();
+      FollowupModel followupModel = FollowupModel.fromJson(res.single);
+      return followupModel;
+    } catch (e) {
+      return FollowupModel();
+    }
+    //consumer_behavior {
+    // recommanded , full_support_with_trial , offline_mode ,
+    // easy_ui , connect_with_pc_mobile ,setup_package ,
+    // meet_budget , available_hardware ,customer_service
+    //}
+  }
+
+  Future<FollowupModel> updateFollowupModel(FollowupModel model) async {
+    try {
+      final res = await supabaseClient
+          .from('followups')
+          .update({
+            'name': model.name,
+            'phone': model.phone,
+            'is_active': model.isActive,
+            'consumer_behavior': model.consumerBehavior,
+            'remark': model.remark,
+            'user_id': model.userId
+          })
+          .eq('id', model.id as int)
+          .select();
+      FollowupModel followupModel = FollowupModel.fromJson(res.single);
+
+      return followupModel;
+    } catch (e) {
+      return FollowupModel();
+    }
+  }
+
+  Future<List<FollowupModel>> findAllFollowups() async {
+    List<FollowupModel> followups = List.empty();
+    try {
+      final res = await supabaseClient
+          .from('followups')
+          .select()
+          .order('created_at', ascending: false);
+
+      followups = res.map((e) => FollowupModel.fromJson(e)).toList();
+
+      return followups;
+    } catch (e) {
+      return followups;
+    }
+  }
+
+  Future<List<FollowupModel>> followupsByKeyword(String keyword) async {
+    List<FollowupModel> followups = List.empty();
+    try {
+      final res = await supabaseClient
+          .from('followups')
+          .select()
+          .ilike('name', '$keyword%')
+          .order('created_at', ascending: false);
+
+      followups = res.map((e) => FollowupModel.fromJson(e)).toList();
+
+      return followups;
+    } catch (e) {
+      return followups;
+    }
+  }
+
+  /*
+    CREATE OR REPLACE FUNCTION codelab.followups_sql_query(sql TEXT) RETURNS TABLE(
+    id bigint,
+    created_at timestamp,
+    name text,
+    phone text,
+    is_active boolean,
+    consumer_behavior text,
+    remark text,
+    user_id bigint) AS $$ 
+    BEGIN 
+    RETURN QUERY EXECUTE sql; 
+    END; 
+    $$ LANGUAGE plpgsql;
+    */
+
+  //select codelab.leads_sql_query('select * from codelab.leads');
+
+  Future<List<FollowupModel>> followupsByFilter(
+      String behavior, String startDate, String endDate) async {
+    List<FollowupModel> followups = List.empty();
+
+    var query =
+        'SELECT * FROM followups WHERE created_at BETWEEN \'$startDate\' AND \'$endDate\' ';
+
+    if (behavior.toUpperCase() != 'ALL') {
+      query += 'AND consumer_behavior =\'$behavior\' ';
+    }
+
+    try {
+      final res = await supabaseClient
+          .schema('codelab')
+          .rpc('followups_sql_query', params: {'sql': query})
+          .select()
+          .order('created_at', ascending: false);
+
+      followups = res.map((e) => FollowupModel.fromJson(e)).toList();
+      return followups;
+    } catch (e) {
+      return followups;
     }
   }
 }
