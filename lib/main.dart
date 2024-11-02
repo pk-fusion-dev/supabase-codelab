@@ -48,11 +48,11 @@ void main() async {
       action: 'viber_call',
       remark: 'trial',
       userId: 1);
-      
+
   //service.updateLeadModel(leadModel);
   //service.leadsByKeyword('MTK');
 
-  service.leadsByFilter('all', 'all', '2024-11-01 00:00:00', '2024-11-02 23:59:59');
+  service.leadsByFilter('ADS', 'FusionPOS_PC', '2024-11-01 00:00:00', '2024-11-02 23:59:59');
   runApp(const MyApp());
 }
 

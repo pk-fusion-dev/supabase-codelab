@@ -300,7 +300,7 @@ class SupabaseService {
     } catch (e) {
       return LeadModel();
     }
-    //app {POS_PC,POS_Mobile,RS,Future_App}
+    //app {FusionPOS_PC,FusionPOS_Mobile,RS,Future_App}
     //action{phone_call,viber_connect,trial,video_tutorials,online_training}
     //source{registration,ads,fb_group,google,on_ground,fb_page}
   }
@@ -352,8 +352,7 @@ class SupabaseService {
           .select()
           .ilike('name', '$keyword%')
           .order('created_at', ascending: false);
-      ;
-
+      
       leads = res.map((e) => LeadModel.fromJson(e)).toList();
 
       return leads;
@@ -363,34 +362,54 @@ class SupabaseService {
   }
 
 //
+  /*
+    CREATE OR REPLACE FUNCTION codelab.sql_query(sql TEXT) RETURNS TABLE(
+    id bigint,
+    created_at timestamp,
+    name text,
+    phone text,
+    source text,
+    app text,
+    action text,
+    remark text,
+    user_id bigint) AS $$ 
+    BEGIN 
+    RETURN QUERY EXECUTE sql; 
+    END; 
+    $$ LANGUAGE plpgsql;
+    */
+
+  //select codelab.sql_query('select * from codelab.leads');
+
   Future<List<LeadModel>> leadsByFilter(
       String source, String app, String startDate, String endDate) async {
+
     List<LeadModel> leads = List.empty();
-    List<LeadModel> filterLeads = List.empty();
+    var query =
+        'SELECT * FROM leads WHERE created_at BETWEEN \'$startDate\' AND \'$endDate\' ';
+
+    if (source.toUpperCase() != 'ALL') {
+      query += 'AND source =\'$source\' ';
+    }
+
+    if (app.toUpperCase() != 'ALL') {
+      query += 'AND app =\'$app\' ';
+    }
+
     try {
       final res = await supabaseClient
-          .from('leads')
-          .select()
-          .gte('created_at', (startDate)) //format 2024-08-01 00:00:00
-          .lte('created_at', (endDate))
-          .order('created_at', ascending: false); //format 22024-09-30 23:59:59
+          .schema('codelab')
+          .rpc('sql_query', params: {'sql': query}).select().order('created_at', ascending: false);
+
 
       leads = res.map((e) => LeadModel.fromJson(e)).toList();
-
-      if (source.toLowerCase() == 'all' && app.toLowerCase() == 'all') {
-        filterLeads = leads;
-      } else {
-        // filterLeads = leads.where((lead){
-        //   return lead.app == app && lead.source == source;
-        // }).toList();
-      }
-      for (LeadModel model in filterLeads) {
+      for (LeadModel model in leads) {
         log(model.toString());
       }
 
-      return filterLeads;
+      return leads;
     } catch (e) {
-      return filterLeads;
+      return leads;
     }
   }
 }
