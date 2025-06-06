@@ -50,13 +50,13 @@ class AppTheme {
               borderSide: BorderSide(color: Colors.blueAccent))),
 
       //Tab Menu
-      tabBarTheme: const TabBarTheme(
+      tabBarTheme: const TabBarThemeData(
           labelColor: Colors.blueAccent,
           indicatorColor: Colors.blueAccent,
           unselectedLabelColor: Colors.grey),
 
       //Card View
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
           color: Colors.white,
           elevation: 0,
           shape: RoundedRectangleBorder(
